@@ -1,0 +1,41 @@
+<script type="text/javascript" language="javascript">// <![CDATA[
+var oRequest = new XMLHttpRequest();
+var sURL = "/mc/community/eventList.do?ext=2&option=com_mc&view=mc&Itemid=98";
+var eURL = '<p><a href="/index.php?option=com_mc&view=mc&mcid=72&';
+var htmlpage, i, spos, tpos, bpos, epos;
+var eventlist = "";
+var maxEvents = 4; //Maximum number of events (if available)
+oRequest.open("GET", sURL, true);
+oRequest.onreadystatechange = function() {
+if (oRequest.readyState === 4) { // Makes sure the document is ready to parse.
+if (oRequest.status === 200) { // Makes sure it's found the file.
+htmlpage=oRequest.responseText;
+var htmltext = htmlpage.valueOf();
+var availEvents = htmltext.split('<div class="blockContainer" width="100%">').length - 1;
+epos=htmlpage.indexOf("Upcoming Event List");// Get position of "Upcoming Event List"
+if (maxEvents < availEvents) {
+eventLimit = maxEvents;
+} else {
+eventLimit = availEvents;
+};
+for (i=0; i<eventLimit; i++) {
+tpos=htmlpage.indexOf("</table", epos) + 10;// Find and skip "</table"
+bpos=htmlpage.indexOf("/mc/community/eventdetails.do?", tops) + 30;// Find "/mc/community/eventdetails.do?" - beginning of event
+epos=htmlpage.indexOf("&recurringId=0", bpos)+14;// Find end of event link
+event list = event list + eURL + htmlpage.substr(bpos,epos - bpos)+'">'; //get event code and add a line break
+
+bpos=htmlpage.indexOf("resetStatus();return true;",epos)+ 28;
+epos=htmlpage.indexOf("</a>",bpos)+4;
+event list = event list + htmlpage.substr(bpos,epos - bpos)+'<br/>';// get event title
+bpos=htmlpage.indexOf("instructions", epos) +15; // find the time component
+epos=htmlpage.indexOf("</div>", bpos);// Find end of event - "</div>"
+eventlist = eventlist + htmlpage.substr(bpos,epos - bpos)+'</p>';// get event code
+}
+document.getElementById('upcomingEventsInfo').innerHTML=eventlist
+}
+}
+}
+oRequest.send(null);
+
+// ]]></script>
+<div id="upcomingEventsInfo"></div>
