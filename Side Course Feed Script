@@ -1,0 +1,33 @@
+<script type="text/javascript" language="javascript">// <![CDATA[
+var oRequest = new XMLHttpRequest();
+// if need a token, use "mcId=" + gettoken()" and add function
+var sURL = "/mc/community/eventList.do?ext=2&servId=5234&option=com_mc&view=mc&Itemid=98";
+var eURL = '<a href="/index.php?option=com_mc&view=mc&mcid=72&';
+var htmlpage, i,spos, tpos, bpos, epos;
+var eventlist = "";
+var num_events_to_display = 3;
+
+oRequest.open("GET", sURL, true);
+oRequest.onreadystatechange = function() {
+  if (oRequest.readyState === 4) {  // Makes sure the document is ready to parse.
+    if (oRequest.status === 200) {  // Makes sure it's found the file.
+      htmlpage=oRequest.responseText;
+      // Get position of "Upcoming Event List"
+      epos=htmlpage.indexOf("Upcoming Event List");
+      for (i=0;i<num_events_to_display;i++) {
+        // Find and skip "</table"
+        tpos=htmlpage.indexOf("</table", epos) + 10;
+        // Find "/mc/community/eventdetails.do?" - beginning of event
+        bpos=htmlpage.indexOf("/mc/community/eventdetails.do?", tpos) + 30;
+        // Find end of event - "</div>"
+        epos=htmlpage.indexOf("</div>", bpos) + 6;
+        // get event code
+        eventlist = eventlist + eURL + htmlpage.substr(bpos,epos - bpos) + "<br />";
+      }
+      document.getElementById('upcomingEventsInfo').innerHTML=eventlist
+    }
+  }
+}
+oRequest.send(null);
+// ]]></script>
+<div style="margin-left: 5px;" id="upcomingEventsInfo"></div>
